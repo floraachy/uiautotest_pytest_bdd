@@ -1,6 +1,6 @@
 ## 一、框架介绍
 
-本框架是基于pyest_bdd实现的Web UI自动化测试框架。
+本框架是基于pytest_bdd实现的Web UI自动化测试框架。
 
 * git地址: [https://gitlink.org.cn/floraachy/uiautotest_pytest_bdd.git](https://gitlink.org.cn/floraachy/uiautotest_pytest_bdd.git)
 * 项目参与者: floraachy
