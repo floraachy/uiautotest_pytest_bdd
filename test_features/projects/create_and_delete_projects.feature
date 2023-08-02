@@ -5,6 +5,7 @@ Feature: 开源项目模块
     Background: 清除浏览器缓存，避免缓存影响用例
     Given 清除浏览器缓存
 
+    @todo
     Scenario: 登录状态下，通过右上角导航栏点击新建>新建项目按钮， 新建个人公有项目
         Given 打开浏览器，写入登录cookies
         And 刷新页面，保持登录态

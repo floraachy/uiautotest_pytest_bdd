@@ -17,7 +17,7 @@ from page.projects.project_detail_page import ProjectDetailPage
 from case_utils.data_handle import data_handle, eval_data_process
 from config.global_vars import GLOBAL_VARS
 
-scenarios('../../test_features/projects/create_and_delete_projects.feature')
+scenarios('./projects/create_and_delete_projects.feature')
 
 case = {
     "name": "Auto Test ${generate_name()}",
@@ -28,7 +28,7 @@ case = {
     "gitignore": random.choice(["Ada", "Actionscript", "Ansible", "Android", "Agda"]),
     "license": random.choice(["0BSD", "AAL", "AFL-1.1", "389-exception"]),
 }
-case = eval_data_process(data_handle(obj=case, source=GLOBAL_VARS))
+case = eval_data_process(data_handle(obj=case, source=None))
 
 logger.debug(f"打印用例，定位一下：{case}")
 

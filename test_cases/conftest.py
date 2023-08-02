@@ -10,7 +10,7 @@
 import pytest
 import requests
 from loguru import logger
-from pytest_bdd import given
+from pytest_bdd import given, then
 # 本地应用/模块导入
 from config.settings import RunConfig
 from config.global_vars import GLOBAL_VARS
@@ -86,4 +86,3 @@ def login_api():
     except Exception as e:
         GLOBAL_VARS["login_cookie"] = None
         logger.error(f"获取用户：{login}登录的cookies失败：{e}")
-

@@ -31,6 +31,8 @@ username_on_page = (By.ID, "login_username")
 password_on_page = (By.ID, "login_password")
 # 提交登录表单按钮
 login_submit_button_on_page = (By.XPATH, "//span[text()='登 录']/..")
+# 登录错误的提示语
+login_error_text = (By.XPATH, "//p[contains(@class, 'message')]")
 # 下次自动登录
 auto_login = (By.XPATH, "//span[contains(text(), '下次自动登录')]")
 # 忘记密码
@@ -86,10 +88,17 @@ class LoginPage(BasePage):
         time.sleep(5)
         allure_step(step_title=f"登录页面中，点击登录按钮，提交登录表单")
 
-    def error_pop(self):
+    def get_error_pop_text(self):
         """弹框的错误提示"""
         elems = self.driver.find_elements(*error_pop)
         return [elem.text for elem in elems]
+
+    def get_login_error_text(self):
+        """
+        登录失败的错误提示语句
+        """
+        elems = self.driver.find_elements(*login_error_text)
+        return [elem.text for elem in elems][0]
 
     def login_button_class(self):
         """获取弹框中登录按钮的class属性"""

@@ -13,7 +13,6 @@
   > python run.py -m demo 在test环境仅运行打了标记demo用例， 默认报告采用allure
   > python run.py -env live 在live环境运行测试用例
   > python run.py -env=test 在test环境运行测试用例
-  > python run.py -report=pytest-html (默认在test环境运行测试用例, 报告采用pytest-html)
   > python run.py -driver chrome   (使用chrome浏览器运行测试用例)
 """
 # 标准库导入
@@ -81,13 +80,13 @@ def generate_allure_report():
     # ----------------START: 美化allure测试报告 ------------------------------------------
     # 设置打开的 Allure 报告的浏览器窗口标题文案
     AllureReportBeautiful(allure_html_path=ALLURE_HTML_DIR).set_windows_title(
-        new_title=ENV_VARS["common"]["project_name"])
+        new_title=ENV_VARS["common"]["项目名称"])
     # 修改Allure报告Overview的标题文案
     AllureReportBeautiful(allure_html_path=ALLURE_HTML_DIR).set_report_name(
-        new_name=ENV_VARS["common"]["report_title"])
+        new_name=ENV_VARS["common"]["报告标题"])
     # 在allure-html报告中往widgets/environment.json中写入环境信息
     env_info = ENV_VARS["common"]
-    env_info["run_env"] = GLOBAL_VARS.get("host", None)
+    env_info["运行环境"] = GLOBAL_VARS.get("host", None)
     AllureReportBeautiful(allure_html_path=ALLURE_HTML_DIR).set_report_env_on_html(
         env_info=env_info)
     # ----------------END: 美化allure测试报告 ------------------------------------------
@@ -107,7 +106,7 @@ def generate_allure_report():
     return ALLURE_HTML_DIR, attachment_path
 
 
-def run(env, m, report, driver_type):
+def run(env, m, driver_type):
     try:
         # ------------------------ 捕获日志----------------------------
         capture_logs()
@@ -124,23 +123,14 @@ def run(env, m, report, driver_type):
                     f"--reruns-delay={RunConfig.reruns_delay}"]
         if m is not None:
             arg_list.append(f"-m {m}")
-        if report.lower() == "allure":
-            arg_list.extend([f'--alluredir={ALLURE_RESULTS_DIR}', '--clean-alluredir'])
-            pytest.main(args=arg_list)
-            report_path, attachment_path = generate_allure_report()
-        else:
-            # 测试报告路径
-            report_path = os.path.join(REPORT_DIR, "autotest_report.html")
-            attachment_path = report_path
-            # 优化测试报告的css路径
-            pytest_html_config_path = os.path.join(CONF_DIR, "pytest_html_config")
-            report_css = os.path.join(pytest_html_config_path, "pytest_html_report.css")
-            # pytest运行的参数
-            arg_list.extend(['--self-contained-html', f'--html={report_path}', f"--css={report_css}"])
-            # 使用pytest运行测试用例
-            pytest.main(args=arg_list)
+
+        arg_list.extend([f'--alluredir={ALLURE_RESULTS_DIR}', '--clean-alluredir'])
+        pytest.main(args=arg_list)
+        # ------------------------ 生成测试报告 ------------------------
+        report_path, attachment_path = generate_allure_report()
         # ------------------------ 发送测试结果 ------------------------
-        send_result(report_path=report_path, report_type=report, attachment_path=attachment_path)
+
+        send_result(report_path=report_path, attachment_path=attachment_path)
     except Exception as e:
         raise e
 
@@ -148,13 +138,12 @@ def run(env, m, report, driver_type):
 if __name__ == '__main__':
     # 定义命令行参数
     parser = argparse.ArgumentParser(description="框架主入口")
-    parser.add_argument("-report", default="allure", help="选择需要生成的测试报告：pytest-html, allure")
     parser.add_argument("-env", default="test", help="输入运行环境：test 或 live")
     parser.add_argument("-m", default=None, help="选择需要运行的用例：python.ini配置的名称")
     parser.add_argument("-driver", default="edge",
                         help="浏览器驱动类型配置，支持如下类型：chrome, chrome-headless, firefox, firefox-headless, edge")
     args = parser.parse_args()
-    run(env=args.env, m=args.m, report=args.report, driver_type=args.driver)
+    run(env=args.env, m=args.m, driver_type=args.driver)
 
 """
 pytest相关参数：以下也可通过pytest.ini配置
